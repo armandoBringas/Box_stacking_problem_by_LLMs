@@ -96,3 +96,9 @@ In conclusion, while all three solutions are valid and pass the provided test ca
 ## Next Steps
 - Implement the recommended solution in production environments where optimal box stacking is needed.
 - Conduct further testing with a larger variety of test cases to ensure robustness in different scenarios.
+
+## Benchmarks between LLMs 
+
+Looks like from the next table Claude 3 models outperform GPT-4 capabilities in most of the tasks. The next table image was retreived on 2 of June of 2024 from [Introducing the next generation of Claude](https://www.anthropic.com/news/claude-3-family)
+
+![alt text](image.png)
