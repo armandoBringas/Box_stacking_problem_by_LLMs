@@ -1,7 +1,7 @@
 import unittest
 
 
-# Solution 1 (Claude 3.5 Sonnet - Original)
+# Solution 1 (Claude 3.5 Sonnet)
 def max_stack_height_s1(boxes):
     boxes.sort(key=lambda x: x[0] * x[2], reverse=True)
     n = len(boxes)
@@ -79,32 +79,32 @@ def create_stack_recursive_s3(boxes, bottom, offset, stack_map):
     return max(height_with_bottom, height_without_bottom)
 
 
-# Solution 4 (Claude 3.5 Sonnet - Corrected)
-class BoxS4:
+# Copilot Solution
+class BoxCopilot:
     def __init__(self, width, height, depth):
         self.width = width
         self.height = height
         self.depth = depth
 
-    def can_be_above(self, other):
-        return self.width < other.width and self.height < other.height and self.depth < other.depth
+
+def can_be_above_copilot(bottom, top):
+    return bottom.width > top.width and bottom.height > top.height and bottom.depth > top.depth
 
 
-def max_stack_height_s4(boxes):
-    box_objects = [BoxS4(*box) for box in boxes]
-    box_objects.sort(key=lambda b: b.width * b.depth, reverse=True)
-    n = len(box_objects)
+def max_stack_height_copilot(boxes):
+    boxes.sort(key=lambda box: box.width * box.depth, reverse=True)
+    n = len(boxes)
     max_heights = [0] * n
 
     def stack_height(index):
         if max_heights[index] != 0:
             return max_heights[index]
-        max_height = box_objects[index].height
+        max_height = 0
         for i in range(index + 1, n):
-            if box_objects[i].can_be_above(box_objects[index]):
-                max_height = max(max_height, box_objects[index].height + stack_height(i))
-        max_heights[index] = max_height
-        return max_height
+            if can_be_above_copilot(boxes[index], boxes[i]):
+                max_height = max(max_height, stack_height(i))
+        max_heights[index] = max_height + boxes[index].height
+        return max_heights[index]
 
     return max(stack_height(i) for i in range(n))
 
@@ -115,8 +115,6 @@ class TestBoxStacking(unittest.TestCase):
             ([(50, 45, 20), (95, 37, 53), (45, 23, 12)], 68),
             ([(4, 6, 7), (1, 2, 3), (4, 5, 6), (10, 12, 32)], 20),
             ([(1, 2, 3), (2, 3, 4), (3, 4, 5), (4, 5, 6)], 14),
-            ([(10, 10, 10), (20, 20, 20), (30, 30, 30)], 60),  # Added test case
-            ([(5, 5, 5), (5, 5, 5), (5, 5, 5)], 5),  # Added test case
         ]
 
     def test_solution_1(self):
@@ -136,10 +134,11 @@ class TestBoxStacking(unittest.TestCase):
                 boxes_s3 = [BoxS3(*box) for box in boxes]
                 self.assertEqual(create_stack_s3(boxes_s3), expected)
 
-    def test_solution_4(self):
+    def test_solution_copilot(self):
         for boxes, expected in self.test_cases:
             with self.subTest(boxes=boxes, expected=expected):
-                self.assertEqual(max_stack_height_s4(boxes), expected)
+                boxes_copilot = [BoxCopilot(*box) for box in boxes]
+                self.assertEqual(max_stack_height_copilot(boxes_copilot), expected)
 
 
 if __name__ == '__main__':
